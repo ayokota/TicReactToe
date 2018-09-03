@@ -21,7 +21,7 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            squares: Array(9).fill(null),
+            squares: Array(3).fill(null).map(()=>Array(3).fill(null)),
             xIsNext: true,
         };
     }
@@ -30,13 +30,15 @@ class Board extends React.Component {
 
     }
 
-    handleClick(i) {
+    handleClick(i,j) {
         const squares = this.state.squares.slice();
 
-        if (squares[i]) {
+        if (squares[i][j]) {
             return;
         }
-        squares[i] = this.state.xIsNext === true ? 'X' : 'O';
+        console.log(JSON.stringify(squares));
+        squares[i][j] = this.state.xIsNext === true ? 'X' : 'O';
+        console.log(JSON.stringify(squares));
         const xIsNext = !this.state.xIsNext;
         this.setState(
             {
@@ -45,13 +47,25 @@ class Board extends React.Component {
             });
     }
 
-    renderSquare(i) {
+    renderSquare(i, j) {
         return (
             <Square
-                value={this.state.squares[i]}
-                onClick={() => this.handleClick(i)}
+                value={this.state.squares[i][j]}
+                onClick={() => this.handleClick(i,j)}
             />
         );
+    }
+
+    renderRow(i) {
+        let renderedRow = [];
+        //let end = i + 3;
+        let end = this.state.squares[i].length;
+        for (let j = 0; j < end; j++) {
+            renderedRow.push(this.renderSquare(i,j));
+        }
+
+
+        return ( renderedRow );
     }
 
     render() {
@@ -61,19 +75,13 @@ class Board extends React.Component {
             <div>
                 <div className="status">{status}</div>
                 <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
+                    {this.renderRow(0)}
                 </div>
                 <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
+                    {this.renderRow(1)}
                 </div>
                 <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
+                    {this.renderRow(2)}
                 </div>
             </div>
         );
