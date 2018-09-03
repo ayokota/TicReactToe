@@ -37,17 +37,21 @@ class Board extends React.Component {
 
         //-1,0
         for(let y = _y, x = _x; x >=0 && y>=0 ; x+= xIncrement, y+= yIncrement) {
-            if(player==squares[y][x]) {
+            if(player===squares[y][x]) {
                 match++;
+            } else {
+                break;
             }
         }
         for(let y = _y, x = _x; x < squares[_y].length && y < squares.length ; x+= invXIncrement, y+= invYIncrement) {
-            if(player==squares[y][x]) {
+            if(player===squares[y][x]) {
                 match++;
+            } else {
+                break;
             }
         }
         match -= 1;
-        if (match===this.state.winCondition) {
+        if (match>=this.state.winCondition) {
             return this.state.squares[_y][_x];
         }
         return null;
