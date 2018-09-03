@@ -23,27 +23,66 @@ class Board extends React.Component {
         this.state = {
             squares: Array(3).fill(null).map(() => Array(3).fill(null)),
             xIsNext: true,
+            winCondition: 3,
+            winner: null
         };
     }
 
-    calculateWinner(i) {
+    //i, j
+    calculateWinner(_y, _x , squares) {
 
+        let match = 0;
+        let player = this.state.xIsNext? 'X' : 'O';
+        //-1,0
+        for(let y = _y, x = _x; x >=0; x--) {
+            //console.log(x,y,squares[y][x]);
+
+            if(player==squares[y][x]) {
+                match++;
+            }
+        }
+        for(let y = _y, x = _x; x < squares.length; x++) {
+            //console.log(x,y,squares[y][x]);
+
+            if(player==squares[y][x]) {
+                match++;
+            }
+        }
+        match -= 1;
+        if (match===this.state.winCondition) {
+            console.log(player + " won!");
+
+            return this.state.squares[_y][_x];
+        }
+
+        //-1,-1
+
+        //0,1
+
+        //1,1
+
+        return null;
     }
 
     handleClick(i, j) {
         const squares = this.state.squares.slice();
 
-        if (squares[i][j]) {
+        if (squares[i][j] || this.state.winner ) {
             return;
         }
-        console.log(JSON.stringify(squares));
+
         squares[i][j] = this.state.xIsNext === true ? 'X' : 'O';
-        console.log(JSON.stringify(squares));
+        var winner = this.calculateWinner(i, j, squares);
+        console.log(winner);
+        // if(winner) {
+        //     this.state.winner = winner;
+        // }
         const xIsNext = !this.state.xIsNext;
         this.setState(
             {
                 squares: squares,
                 xIsNext: xIsNext,
+                winner: winner
             });
     }
 
@@ -69,15 +108,25 @@ class Board extends React.Component {
     }
 
     render() {
-        const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        let status;
+        const winner = this.state.winner;
 
+        if(winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        }
+       
+        
         var board = [];
 
 
         for (let i = 0; i < this.state.squares.length; i++) {
-            var row = (<div className="board-row">
-                {this.renderRow(i)}
-            </div>);
+            var row = (
+                <div className="board-row">
+                    {this.renderRow(i)}
+                </div>
+            );
             board.push(row);
         }
 
