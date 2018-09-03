@@ -21,7 +21,7 @@ class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            squares: Array(3).fill(null).map(()=>Array(3).fill(null)),
+            squares: Array(3).fill(null).map(() => Array(3).fill(null)),
             xIsNext: true,
         };
     }
@@ -30,7 +30,7 @@ class Board extends React.Component {
 
     }
 
-    handleClick(i,j) {
+    handleClick(i, j) {
         const squares = this.state.squares.slice();
 
         if (squares[i][j]) {
@@ -51,7 +51,7 @@ class Board extends React.Component {
         return (
             <Square
                 value={this.state.squares[i][j]}
-                onClick={() => this.handleClick(i,j)}
+                onClick={() => this.handleClick(i, j)}
             />
         );
     }
@@ -61,28 +61,32 @@ class Board extends React.Component {
         //let end = i + 3;
         let end = this.state.squares[i].length;
         for (let j = 0; j < end; j++) {
-            renderedRow.push(this.renderSquare(i,j));
+            renderedRow.push(this.renderSquare(i, j));
         }
 
 
-        return ( renderedRow );
+        return (renderedRow);
     }
 
     render() {
         const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
+        var board = [];
+
+
+        for (let i = 0; i < this.state.squares.length; i++) {
+            var row = (<div className="board-row">
+                {this.renderRow(i)}
+            </div>);
+            board.push(row);
+        }
+
         return (
             <div>
                 <div className="status">{status}</div>
-                <div className="board-row">
-                    {this.renderRow(0)}
-                </div>
-                <div className="board-row">
-                    {this.renderRow(1)}
-                </div>
-                <div className="board-row">
-                    {this.renderRow(2)}
-                </div>
+                {
+                    board
+                }
             </div>
         );
     }
