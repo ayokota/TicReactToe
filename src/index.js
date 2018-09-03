@@ -28,38 +28,52 @@ class Board extends React.Component {
         };
     }
 
-    //i, j
-    calculateWinner(_y, _x , squares) {
-
+    scan(_y, _x, squares, xIncrement, yIncrement) {
         let match = 0;
         let player = this.state.xIsNext? 'X' : 'O';
-        //-1,0
-        for(let y = _y, x = _x; x >=0; x--) {
-            //console.log(x,y,squares[y][x]);
 
+        let invXIncrement = xIncrement * (-1);
+        let invYIncrement = yIncrement * (-1);
+
+        //-1,0
+        for(let y = _y, x = _x; x >=0 && y>=0 ; x+= xIncrement, y+= yIncrement) {
             if(player==squares[y][x]) {
                 match++;
             }
         }
-        for(let y = _y, x = _x; x < squares.length; x++) {
-            //console.log(x,y,squares[y][x]);
-
+        for(let y = _y, x = _x; x < squares[_y].length && y < squares.length ; x+= invXIncrement, y+= invYIncrement) {
             if(player==squares[y][x]) {
                 match++;
             }
         }
         match -= 1;
         if (match===this.state.winCondition) {
-            console.log(player + " won!");
-
             return this.state.squares[_y][_x];
         }
+        return null;
+    }
+
+    //i, j
+    calculateWinner(_y, _x , squares) {
+        //-1, 0
+        let result = this.scan(_y, _x, squares, -1, 0);
+        if( result )
+            return result;
 
         //-1,-1
+        result = this.scan(_y, _x, squares, -1, -1);
+        if( result )
+            return result;
 
-        //0,1
+        //0,-1
+        result = this.scan(_y, _x, squares, 0, -1);
+        if( result )
+            return result;
 
-        //1,1
+        //-1,1
+        result = this.scan(_y, _x, squares, 1, -1);
+        if( result )
+            return result;
 
         return null;
     }
@@ -73,10 +87,7 @@ class Board extends React.Component {
 
         squares[i][j] = this.state.xIsNext === true ? 'X' : 'O';
         var winner = this.calculateWinner(i, j, squares);
-        console.log(winner);
-        // if(winner) {
-        //     this.state.winner = winner;
-        // }
+
         const xIsNext = !this.state.xIsNext;
         this.setState(
             {
@@ -97,7 +108,6 @@ class Board extends React.Component {
 
     renderRow(i) {
         let renderedRow = [];
-        //let end = i + 3;
         let end = this.state.squares[i].length;
         for (let j = 0; j < end; j++) {
             renderedRow.push(this.renderSquare(i, j));
